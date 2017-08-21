@@ -239,6 +239,7 @@ public class Controller {
         Sto t = new Sto();
         t.setStoID(sto.getStoID());
         t.setUkupanDnevniIznos(sto.getUkupanDnevniIznos());
+        t.setZauzet(sto.isZauzet());
         ClientTransfer ct = new ClientTransfer();
         ct.setOperation(Constants.UPDATE_TABLE);
         System.out.println(t.getUkupanDnevniIznos());

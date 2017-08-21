@@ -208,15 +208,16 @@ public class ServerController {
         for (AbstractObject table : tables) {
             Sto s = (Sto) table;
             iznos += s.getUkupanDnevniIznos();
-            
-            List<AbstractObject> bills = getBills(s);
-            for (AbstractObject bill : bills) {
-                Racun r = (Racun) bill;
-                SODeleteBill sodb = new SODeleteBill(r);
-                sodb.runOperation();
-            }
-            s.setUkupanDnevniIznos(0);
-            updateTableSum(s);
+            s.setZauzet(false); //*
+            s.setUkupanDnevniIznos(0); //*
+//            List<AbstractObject> bills = getBills(s);
+//            for (AbstractObject bill : bills) {
+//                Racun r = (Racun) bill;
+//                SODeleteBill sodb = new SODeleteBill(r);
+//                sodb.runOperation();
+//            }
+//            s.setUkupanDnevniIznos(0);
+//            updateTableSum(s);
         }
         return "Ukupan prihod za danasnji dan je: "+iznos;
     }

@@ -8,6 +8,7 @@ package dbbroker;
 import domen.AbstractObject;
 import domen.Konobar;
 import exception.ServerException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,6 +18,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import param.cfg.ParamConfigurator;
 
 /**
  *
@@ -33,10 +35,11 @@ public class DBBroker {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             System.out.println("Driver baze ucitan!");
-            String url = "jdbc:mysql://localhost:3306/baza_kafic";
-            String user = "root";
-            String password = "";
-            connection = DriverManager.getConnection(url, user, password);
+//            String url = "jdbc:mysql://localhost:3306/baza_kafic";
+//            String user = "root";
+//            String password = "";
+//            connection = DriverManager.getConnection(url, user, password);
+            startConnection();
             connection.setAutoCommit(false);
             System.out.println("Uspesno uspostavljanje konekcije!");
         } catch (SQLException ex) {
@@ -45,6 +48,8 @@ public class DBBroker {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServerException("Driver nije uspesno ucitan!");
+        } catch (IOException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -210,5 +215,17 @@ public class DBBroker {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServerException(ex.getMessage());
         }
+    }
+
+    private void startConnection() throws IOException, SQLException {
+        ParamConfigurator pc = new ParamConfigurator();
+        List<String> list = pc.readDBParams();
+        String user = list.get(0);
+        String pass = list.get(1);
+        String url = "jdbc:mysql://localhost:"+list.get(3)+"/"+list.get(2); //+port/baza
+        System.out.println(user);
+        System.out.println(pass);
+        System.out.println(url);
+        connection = DriverManager.getConnection(url, user, pass);
     }
 }

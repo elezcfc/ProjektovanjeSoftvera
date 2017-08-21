@@ -21,8 +21,9 @@ public class StavkeTableModel extends AbstractTableModel {
 
     private List<StavkaRacuna> listStavki;
     int brStavke = 0;
-    public StavkeTableModel(List<StavkaRacuna> listStavki) {
-        this.listStavki = listStavki;
+    public StavkeTableModel(Racun racun) {
+        this.listStavki = racun.getStavkeRacuna();
+        brStavke = racun.getStavkeRacuna().size();
     }
 
     @Override
@@ -40,7 +41,7 @@ public class StavkeTableModel extends AbstractTableModel {
         StavkaRacuna sr = listStavki.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return sr.getRacun().getRacunID();
+                return sr.getBrStavkeRacuna();
             case 1:
                 return sr.getPice().getNazivPica();
             default:
@@ -52,7 +53,7 @@ public class StavkeTableModel extends AbstractTableModel {
     public String getColumnName(int column) {
         switch (column) {
             case 0:
-                return "ID racuna";
+                return "Broj stavke racuna";
             case 1:
                 return "Pice";   
             default:
@@ -61,13 +62,15 @@ public class StavkeTableModel extends AbstractTableModel {
     }
     
     public void dodajStavkuRacuna(Racun racun, Pice p) {
-        StavkaRacuna stavka = new StavkaRacuna(racun, p, 0);
+        StavkaRacuna stavka = new StavkaRacuna(racun, p, brStavke);
         listStavki.add(stavka);
+        brStavke++;
         fireTableDataChanged();
     }
 
     public void obrisiStavkuRacuna(int index) {
         listStavki.remove(index);
+        brStavke--;
         fireTableDataChanged();
     }
 

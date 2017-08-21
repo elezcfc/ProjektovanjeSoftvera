@@ -38,6 +38,9 @@ public class ServerFrm extends javax.swing.JFrame {
         lblStatus = new javax.swing.JLabel();
         startStopBtn = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        paramJmi = new javax.swing.JMenuItem();
+        dbParamJmi = new javax.swing.JMenuItem();
         jMenuKonobar = new javax.swing.JMenu();
         jMenuItemAdministration = new javax.swing.JMenuItem();
 
@@ -57,6 +60,26 @@ public class ServerFrm extends javax.swing.JFrame {
                 startStopBtnActionPerformed(evt);
             }
         });
+
+        jMenu1.setText("Administracija");
+
+        paramJmi.setText("Izmena parametara servera");
+        paramJmi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paramJmiActionPerformed(evt);
+            }
+        });
+        jMenu1.add(paramJmi);
+
+        dbParamJmi.setText("Izmena parametara baze");
+        dbParamJmi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dbParamJmiActionPerformed(evt);
+            }
+        });
+        jMenu1.add(dbParamJmi);
+
+        jMenuBar1.add(jMenu1);
 
         jMenuKonobar.setText("Konobar");
 
@@ -128,6 +151,18 @@ public class ServerFrm extends javax.swing.JFrame {
         kf.setVisible(true);
     }//GEN-LAST:event_jMenuItemAdministrationActionPerformed
 
+    private void paramJmiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paramJmiActionPerformed
+        // TODO add your handling code here:
+        PortChangeFrm pcf = new PortChangeFrm();
+        pcf.setVisible(true);
+    }//GEN-LAST:event_paramJmiActionPerformed
+
+    private void dbParamJmiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dbParamJmiActionPerformed
+        // TODO add your handling code here:
+        DBConfigFrm dbcf = new DBConfigFrm();
+        dbcf.setVisible(true);
+    }//GEN-LAST:event_dbParamJmiActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -164,12 +199,15 @@ public class ServerFrm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem dbParamJmi;
     private javax.swing.JLabel jLabel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItemAdministration;
     private javax.swing.JMenu jMenuKonobar;
     private javax.swing.JLabel lblStatus;
+    private javax.swing.JMenuItem paramJmi;
     private javax.swing.JButton startStopBtn;
     // End of variables declaration//GEN-END:variables
 

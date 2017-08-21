@@ -29,7 +29,7 @@ public class BillsTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -42,6 +42,12 @@ public class BillsTableModel extends AbstractTableModel {
                 return r.getIznos();
             case 2:
                 return r.getKonobar().getName();
+            case 3:
+                if(r.getPlacen() == 1){
+                    return "Placen";
+                }else{
+                    return "Neplacen!";
+                }
             default:
                 return "n/a";
         }
@@ -56,6 +62,8 @@ public class BillsTableModel extends AbstractTableModel {
                 return "Iznos";
             case 2:
                 return "Konobar";
+            case 3: 
+                return "Placen";
             default:
                 return "n/a";
         }

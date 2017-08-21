@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import model.BillsTableModel;
 
 /**
@@ -37,6 +39,9 @@ public class BillsFrm extends javax.swing.JFrame {
         sto = s;
         ulogovani = k;
         r = new Racun();
+        if(sto.isZauzet()){
+            btnAddBill.setEnabled(false);
+        }
         try {
             fixForm();
         } catch (Exception ex) {
@@ -225,10 +230,20 @@ public class BillsFrm extends javax.swing.JFrame {
 
     private void btnAddBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddBillActionPerformed
         // TODO add your handling code here:
-        NewBillFrm nbf = new NewBillFrm(sto, ulogovani, this);
-        refreshList(nbf.getRacun());
-        nbf.setVisible(true);
-        this.setVisible(false);
+        if(!sto.isZauzet()){
+            sto.setZauzet(true);
+            try {
+                Controller.getControllerInstance().updateTable(sto);
+                NewBillFrm nbf = new NewBillFrm(sto, ulogovani, this);
+                refreshList(nbf.getRacun());
+                nbf.setVisible(true);
+                this.setVisible(false);
+            } catch (Exception ex) {
+                Logger.getLogger(BillsFrm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "Sto je zauzet i dalje, ne mozete dodavati novi racun!");
+        }
     }//GEN-LAST:event_btnAddBillActionPerformed
 
     private void btnUpdateBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateBillActionPerformed
@@ -359,6 +374,22 @@ public class BillsFrm extends javax.swing.JFrame {
             jTable1.setModel(btm);
             JOptionPane.showMessageDialog(this, "Nema racuna za izabrani sto, unesite novi racun.");
         }
+        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int row = jTable1.getSelectedRow();
+                if(row == -1){
+                    return;
+                }else{
+                    Racun r = (Racun) bills.get(row);
+                    if(r.getPlacen() == 1){
+                        btnUpdateBill.setEnabled(false);
+                    }else{
+                        btnUpdateBill.setEnabled(true);
+                    }
+                }
+            }
+        });
     }
 
     private void calculateDailyRevenue() {

@@ -9,6 +9,7 @@ import controller.Controller;
 import domen.AbstractObject;
 import domen.Konobar;
 import domen.Sto;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Shape;
@@ -77,16 +78,35 @@ public class TablesFrm extends javax.swing.JFrame {
 
         jTableTables.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2"
+                "Title 1", "Title 2", "Title 3"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTableTables);
+        if (jTableTables.getColumnModel().getColumnCount() > 0) {
+            jTableTables.getColumnModel().getColumn(2).setPreferredWidth(20);
+            jTableTables.getColumnModel().getColumn(2).setMaxWidth(20);
+        }
 
         btnAddBill.setText("Unesi racun");
         btnAddBill.addActionListener(new java.awt.event.ActionListener() {

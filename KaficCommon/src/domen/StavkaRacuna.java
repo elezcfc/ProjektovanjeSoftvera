@@ -67,7 +67,7 @@ public class StavkaRacuna extends AbstractObject {
                 int brStavkeRacuna = rs.getInt("brStavkeRacuna");
 
                 Pice p = new Pice(piceID, null, 0);
-                Racun r = new Racun(racunID, piceID, null, null, null);
+                Racun r = new Racun(racunID, piceID, null, null, null, 0);
 
                 StavkaRacuna stavkaRacuna = new StavkaRacuna(r, p, brStavkeRacuna);
                 stavke.add(stavkaRacuna);

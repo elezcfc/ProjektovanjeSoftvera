@@ -21,6 +21,7 @@ public class Sto extends AbstractObject {
     private int stoID;
     private double ukupanDnevniIznos;
     private List<Racun> dnevniRacuni;
+    private boolean zauzet;
 
     public Sto() {
     }
@@ -29,12 +30,21 @@ public class Sto extends AbstractObject {
         this.stoID = stoID;
         this.ukupanDnevniIznos = ukupanDnevniIznos;
         this.dnevniRacuni = dnevniRacuni;
+        zauzet = false;
     }
 
     public Sto(int stoID, double ukupanDnevniIznos) {
         this.stoID = stoID;
         this.ukupanDnevniIznos = ukupanDnevniIznos;
         dnevniRacuni = new ArrayList<>();
+        zauzet = false;
+    }
+
+    private Sto(int stoID, double ukupanIznos, List<Racun> dnevniRacuni, boolean z) {
+        this.stoID = stoID;
+        this.ukupanDnevniIznos = ukupanIznos;
+        this.dnevniRacuni = dnevniRacuni;
+        zauzet = z;
     }
 
     @Override
@@ -44,7 +54,7 @@ public class Sto extends AbstractObject {
 
     @Override
     public String getParams() {
-        return String.format("'%s', '%s'", stoID, ukupanDnevniIznos);
+        return String.format("'%s', '%s', '%s'", stoID, ukupanDnevniIznos, zauzet);
     }
 
     @Override
@@ -69,9 +79,16 @@ public class Sto extends AbstractObject {
             while (rs.next()) {
                 int stoID = rs.getInt("stoID");
                 double ukupanIznos = rs.getDouble("ukupanDnevniIznos");
+                int i = rs.getInt("zauzet");
+                boolean z;
+                if(i == 1){
+                    z = true;
+                }else{
+                    z = false;
+                }
                 List<Racun> dnevniRacuni = new ArrayList<>();
 
-                Sto s = new Sto(stoID, ukupanIznos, dnevniRacuni);
+                Sto s = new Sto(stoID, ukupanIznos, dnevniRacuni, z);
                 stolovi.add(s);
             }
         } catch (SQLException ex) {
@@ -82,7 +99,11 @@ public class Sto extends AbstractObject {
 
     @Override
     public String getUpdate() {
-        return String.format("ukupanDnevniIznos = '%s'", ukupanDnevniIznos);
+        if(zauzet == true){
+            return String.format("ukupanDnevniIznos = '%s', zauzet = '%s'", ukupanDnevniIznos, 1);
+        }else{
+            return String.format("ukupanDnevniIznos = '%s', zauzet = '%s'", ukupanDnevniIznos, 0);
+        }
     }
 
     @Override
@@ -127,4 +148,13 @@ public class Sto extends AbstractObject {
     public int getFKValue() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    public boolean isZauzet() {
+        return zauzet;
+    }
+
+    public void setZauzet(boolean zauzet) {
+        this.zauzet = zauzet;
+    }
+    
 }

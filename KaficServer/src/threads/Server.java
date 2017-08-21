@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import param.cfg.ParamConfigurator;
 
 /**
  *
@@ -22,13 +23,16 @@ import javax.swing.JOptionPane;
 public class Server extends Thread{
 
     private ServerSocket serverSocket;
-    private static int noPort = 9000;
+    //private static int noPort = 9000;
     private List<ClientThread> clients;
     private static boolean active = false;
     private Socket socket = new Socket();
+    private ParamConfigurator pc;
     
     public Server(){
         try {
+            pc = new ParamConfigurator();
+            int noPort = pc.readPort();
             serverSocket = new ServerSocket(noPort);
             System.out.println("Kreiran server socket na portu: "+noPort);
             clients = new ArrayList<>();

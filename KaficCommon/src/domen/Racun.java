@@ -24,16 +24,18 @@ public class Racun extends AbstractObject {
     private Konobar konobar;
     private Sto sto;
     private List<StavkaRacuna> stavkeRacuna;
+    private int placen;
 
     public Racun() {
     }
 
-    public Racun(int racunID, double iznos, Konobar konobar, Sto sto, List<StavkaRacuna> stavkeRacuna) {
+    public Racun(int racunID, double iznos, Konobar konobar, Sto sto, List<StavkaRacuna> stavkeRacuna, int placen) {
         this.racunID = racunID;
         this.iznos = iznos;
         this.konobar = konobar;
         this.sto = sto;
         this.stavkeRacuna = stavkeRacuna;
+        this.placen = placen;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class Racun extends AbstractObject {
 
     @Override
     public String getParams() {
-        return String.format("'%s', '%s', '%s', '%s'",racunID, iznos, konobar.getKonobarID(), sto.getStoID());
+        return String.format("'%s', '%s', '%s', '%s', '%s'",racunID, iznos, konobar.getKonobarID(), sto.getStoID(), placen);
     }
 
     @Override
@@ -70,8 +72,8 @@ public class Racun extends AbstractObject {
                 double iznos = rs.getDouble("iznos");
                 int konobarID = rs.getInt("konobarID");
                 int stoID = rs.getInt("stoID");
-
-                Racun r = new Racun(racunID, iznos, new Konobar(konobarID, null, null, null, null, false), new Sto(stoID, 0, new ArrayList<Racun>()), new ArrayList<StavkaRacuna>());
+                int placen = rs.getInt("placen");
+                Racun r = new Racun(racunID, iznos, new Konobar(konobarID, null, null, null, null, false), new Sto(stoID, 0, new ArrayList<Racun>()), new ArrayList<StavkaRacuna>(), placen);
                 racuni.add(r);
             }
         } catch (SQLException ex) {
@@ -82,7 +84,7 @@ public class Racun extends AbstractObject {
 
     @Override
     public String getUpdate() {
-        return String.format("iznos='%s'", iznos);
+        return String.format("iznos='%s', placen='%s'", iznos, placen);
     }
 
     @Override
@@ -145,5 +147,11 @@ public class Racun extends AbstractObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
+    public int getPlacen() {
+        return placen;
+    }
+
+    public void setPlacen(int placen) {
+        this.placen = placen;
+    }
 }

@@ -37,15 +37,16 @@ public class NewBillFrm extends javax.swing.JFrame {
     private Racun racun;
     private double iznos = 0;
     private JFrame parent;
+
     public NewBillFrm() {
         initComponents();
     }
 
-    public NewBillFrm(Sto s, Konobar k, JFrame parent){
+    public NewBillFrm(Sto s, Konobar k, JFrame parent) {
         initComponents();
         ulogovani = k;
         sto = s;
-        racun = new Racun(0, 0, ulogovani, sto, new ArrayList<>());
+        racun = new Racun(0, 0, ulogovani, sto, new ArrayList<>(), 0);
         this.parent = parent;
         try {
             fixForm();
@@ -53,7 +54,7 @@ public class NewBillFrm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, ex);
             Logger.getLogger(NewBillFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     NewBillFrm(Sto sto, Konobar ulogovani, BillsFrm aThis, Racun r) {
@@ -69,6 +70,7 @@ public class NewBillFrm extends javax.swing.JFrame {
             Logger.getLogger(NewBillFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -92,6 +94,7 @@ public class NewBillFrm extends javax.swing.JFrame {
         btnSaveBill = new javax.swing.JButton();
         jcbPica = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
+        naplatiBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -158,6 +161,13 @@ public class NewBillFrm extends javax.swing.JFrame {
 
         jLabel4.setText("Pice:");
 
+        naplatiBtn.setText("Naplati");
+        naplatiBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                naplatiBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -168,10 +178,16 @@ public class NewBillFrm extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnAddStavka, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRemoveStavka, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnSaveBill, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btnAddStavka, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                                    .addComponent(btnRemoveStavka, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnSaveBill))
+                            .addComponent(naplatiBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -206,17 +222,19 @@ public class NewBillFrm extends javax.swing.JFrame {
                     .addComponent(jtfIznos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jcbPica, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addComponent(btnAddStavka)
-                        .addGap(60, 60, 60)
+                        .addGap(18, 18, 18)
                         .addComponent(btnRemoveStavka)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSaveBill)))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSaveBill)
+                        .addGap(18, 18, 18)
+                        .addComponent(naplatiBtn)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -226,35 +244,35 @@ public class NewBillFrm extends javax.swing.JFrame {
     private void btnAddStavkaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStavkaActionPerformed
         // TODO add your handling code here:
         Pice p = (Pice) jcbPica.getSelectedItem();
-        
+
         stm.dodajStavkuRacuna(racun, p);
         racun.setStavkeRacuna(stm.getListStavki());
 //        iznos = Integer.parseInt(jtfIznos.getText());
-        iznos+= p.getCena();
-        jtfIznos.setText(iznos+"");
+        iznos += p.getCena();
+        jtfIznos.setText(iznos + "");
         JOptionPane.showMessageDialog(this, "Stavka je uspesno dodata");
     }//GEN-LAST:event_btnAddStavkaActionPerformed
 
     private void btnRemoveStavkaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStavkaActionPerformed
         // TODO add your handling code here:
         int index = jTable1.getSelectedRow();
-        if(index != -1){
+        if (index != -1) {
             Pice p = stm.getListStavki().get(index).getPice();
-            iznos-=p.getCena();
-            jtfIznos.setText(iznos+"");
+            iznos -= p.getCena();
+            jtfIznos.setText(iznos + "");
             stm.obrisiStavkuRacuna(index);
             JOptionPane.showMessageDialog(this, "Stavka je uspesno obrisana");
-        }else{
+        } else {
             JOptionPane.showMessageDialog(this, "Morate odabrati stavku za brisanje");
         }
     }//GEN-LAST:event_btnRemoveStavkaActionPerformed
 
     private void btnSaveBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveBillActionPerformed
         // TODO add your handling code here:
-        if(racun.getStavkeRacuna().isEmpty() || racun.getStavkeRacuna() == null){
+        if (racun.getStavkeRacuna().isEmpty() || racun.getStavkeRacuna() == null) {
             JOptionPane.showMessageDialog(this, "Morate uneti stavku racuna");
             return;
-        }else{
+        } else {
             try {
                 racun.setIznos(Double.parseDouble(jtfIznos.getText()));
                 racun.setSto(sto);
@@ -271,6 +289,25 @@ public class NewBillFrm extends javax.swing.JFrame {
         BillsFrm bf = new BillsFrm(sto, ulogovani);
         bf.setVisible(true);
     }//GEN-LAST:event_btnSaveBillActionPerformed
+
+    private void naplatiBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_naplatiBtnActionPerformed
+        try {
+            // TODO add your handling code here:
+            sto.setZauzet(false);
+            Controller.getControllerInstance().updateTable(sto);
+
+            racun.setPlacen(1);
+
+            Racun r = Controller.getControllerInstance().createBill(racun);
+            racun = r;
+            JOptionPane.showMessageDialog(this, "Uspesno izvrsena naplata");
+            this.setVisible(false);
+            BillsFrm bf = new BillsFrm(sto, ulogovani);
+            bf.setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(NewBillFrm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_naplatiBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -323,14 +360,15 @@ public class NewBillFrm extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JComboBox<Pice> jcbPica;
     private javax.swing.JTextField jtfIznos;
+    private javax.swing.JButton naplatiBtn;
     // End of variables declaration//GEN-END:variables
 
     private void fixForm() throws Exception {
         jLblKonobar.setText(ulogovani.getName());
-        jLblSto.setText(sto.getStoID()+"");
+        jLblSto.setText(sto.getStoID() + "");
         List<StavkaRacuna> stavke = new ArrayList<>();
         fillComboBox();
-        stm = new StavkeTableModel(stavke);
+        stm = new StavkeTableModel(racun);
         jTable1.setModel(stm);
         racun.setKonobar(ulogovani);
     }
@@ -344,15 +382,15 @@ public class NewBillFrm extends javax.swing.JFrame {
         return racun;
     }
 
-    private void fixUpdateForm() throws  Exception{
+    private void fixUpdateForm() throws Exception {
         jLblKonobar.setText(ulogovani.getName());
-        jLblSto.setText(sto.getStoID()+"");
-        List<StavkaRacuna> stavke = racun.getStavkeRacuna();
+        jLblSto.setText(sto.getStoID() + "");
+//        List<StavkaRacuna> stavke = racun.getStavkeRacuna();
         fillComboBox();
-        stm = new StavkeTableModel(stavke);
+        stm = new StavkeTableModel(racun);
         jTable1.setModel(stm);
         iznos = racun.getIznos();
-        jtfIznos.setText(racun.getIznos()+"");
+        jtfIznos.setText(racun.getIznos() + "");
         racun.setKonobar(ulogovani);
     }
 

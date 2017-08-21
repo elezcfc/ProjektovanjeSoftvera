@@ -54,7 +54,7 @@ public class SONewBill extends AbstractSO {
         List<StavkaRacuna> noveStavke = new ArrayList<>();
         for (StavkaRacuna s : racun.getStavkeRacuna()) {
             if (!stavke.contains(s)) {
-                s.setBrStavkeRacuna(0);
+//                s.setBrStavkeRacuna(0);
                 StavkaRacuna st = (StavkaRacuna) dBBroker.saveObject(s);
                 noveStavke.add(st);
             }
@@ -102,18 +102,5 @@ public class SONewBill extends AbstractSO {
     public Racun getRacun() {
         return racun;
     }
-//
-//    private void updateSto() throws ServerException {
-//        double iznos = racun.getIznos();
-//        sto.setUkupanDnevniIznos(sto.getUkupanDnevniIznos()+iznos);
-//        dBBroker.saveOrUpdateObject(sto);
-//        double iznos = 0;
-//        for (Racun racun : sto.getDnevniRacuni()) {
-//            iznos += racun.getIznos();
-//        }
-//        System.out.println(iznos);
-//        sto.setUkupanDnevniIznos(iznos);
-//        dBBroker.saveOrUpdateObject(sto);
-//    }
 
 }
