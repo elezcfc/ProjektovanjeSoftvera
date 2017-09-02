@@ -54,7 +54,11 @@ public class Sto extends AbstractObject {
 
     @Override
     public String getParams() {
-        return String.format("'%s', '%s', '%s'", stoID, ukupanDnevniIznos, zauzet);
+        if(zauzet == true){
+            return String.format("'%s', '%s', '%s'", stoID, ukupanDnevniIznos, 1);
+        }else{
+            return String.format("'%s', '%s', '%s'", stoID, ukupanDnevniIznos, 0);
+        }
     }
 
     @Override

@@ -208,11 +208,11 @@ public class TablesFrm extends javax.swing.JFrame {
     private void btnDeleteTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteTableActionPerformed
         // TODO add your handling code here:
         int index = jTableTables.getSelectedRow();
-        Sto sto = (Sto) ttm.getTables().get(index);
         if(index == -1){
             JOptionPane.showMessageDialog(this, "Morate izabrati sto za brisanje!");
             return;
         }else{
+            Sto sto = (Sto) ttm.getTables().get(index);
             int option = JOptionPane.showConfirmDialog(this, "Brisanjem stola, brisete i sve racune za dati sto. Da li zelite da nastavite?");
             if(option == JOptionPane.YES_OPTION){
                 try {
