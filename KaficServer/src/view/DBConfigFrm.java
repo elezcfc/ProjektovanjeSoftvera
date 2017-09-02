@@ -7,6 +7,7 @@ package view;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -23,6 +24,11 @@ public class DBConfigFrm extends javax.swing.JFrame {
      */
     public DBConfigFrm() {
         initComponents();
+        try {
+            fixForm();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Greska pri citanju parametara", 1);
+        }
     }
 
     /**
@@ -48,7 +54,7 @@ public class DBConfigFrm extends javax.swing.JFrame {
         dbNameTf = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("Izmenite parametre baze podataka:");
@@ -61,7 +67,7 @@ public class DBConfigFrm extends javax.swing.JFrame {
 
         jLabel4.setText("Password:");
 
-        urlTf.setText("jdbc:mysql://localhost:");
+        urlTf.setText("jdbc:mysql://localhost:3306/baza_kafic");
 
         jLabel5.setText("Broj porta:");
 
@@ -229,4 +235,18 @@ public class DBConfigFrm extends javax.swing.JFrame {
     private javax.swing.JTextField urlTf;
     private javax.swing.JTextField userTf;
     // End of variables declaration//GEN-END:variables
+
+    private void fixForm() throws IOException {
+        ParamConfigurator pc = new ParamConfigurator();
+        List<String> list = pc.readDBParams();
+        String user = list.get(0);
+        String pass = list.get(1);
+        String name = list.get(2);
+        String port = list.get(3);
+        
+        dbPortTf.setText(port);
+        dbNameTf.setText(name);
+        userTf.setText(user);
+        passTf.setText(pass);
+    }
 }

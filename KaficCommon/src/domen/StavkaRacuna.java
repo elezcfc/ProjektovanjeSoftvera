@@ -22,14 +22,16 @@ public class StavkaRacuna extends AbstractObject {
     private Racun racun;
     private Pice pice;
     private int brStavkeRacuna;
-
+    private int kolicina;
+    
     public StavkaRacuna() {
     }
 
-    public StavkaRacuna(Racun racun, Pice pice, int brStavkeRacuna) {
+    public StavkaRacuna(Racun racun, Pice pice, int brStavkeRacuna, int kolicina) {
         this.racun = racun;
         this.pice = pice;
         this.brStavkeRacuna = brStavkeRacuna;
+        this.kolicina = kolicina;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class StavkaRacuna extends AbstractObject {
 
     @Override
     public String getParams() {
-        return String.format("'%s', '%s', '%s'",racun.getRacunID(), brStavkeRacuna, pice.getPiceID()); 
+        return String.format("'%s', '%s', '%s', '%s'",racun.getRacunID(), brStavkeRacuna, pice.getPiceID(), kolicina); 
     }
 
     @Override
@@ -65,11 +67,12 @@ public class StavkaRacuna extends AbstractObject {
                 int racunID = rs.getInt("racunID");
                 int piceID = rs.getInt("piceID");
                 int brStavkeRacuna = rs.getInt("brStavkeRacuna");
-
+                int kolicina = rs.getInt("kolicina");
+                
                 Pice p = new Pice(piceID, null, 0);
                 Racun r = new Racun(racunID, piceID, null, null, null, 0);
 
-                StavkaRacuna stavkaRacuna = new StavkaRacuna(r, p, brStavkeRacuna);
+                StavkaRacuna stavkaRacuna = new StavkaRacuna(r, p, brStavkeRacuna, kolicina);
                 stavke.add(stavkaRacuna);
             }
         } catch (SQLException ex) {
@@ -80,7 +83,8 @@ public class StavkaRacuna extends AbstractObject {
 
     @Override
     public String getUpdate() {
-        return String.format("brStavkeRacuna = '%s'", brStavkeRacuna);
+        return String.format("kolicina = '%s'", kolicina);
+//        return String.format("brStavkeRacuna = '%s', kolicina = '%s'", brStavkeRacuna, kolicina);
     }
 
     @Override
@@ -151,8 +155,18 @@ public class StavkaRacuna extends AbstractObject {
         if (!Objects.equals(this.racun.getRacunID(), other.racun.getRacunID())) {
             return false;
         }
+        if(this.racun.getRacunID() == other.racun.getRacunID() && this.pice.getPiceID() == other.getPice().getPiceID()){
+            return true;
+        }
         return true;
     }
 
-    
+    public int getKolicina() {
+        return kolicina;
+    }
+
+    public void setKolicina(int kolicina) {
+        this.kolicina = kolicina;
+    }
+
 }

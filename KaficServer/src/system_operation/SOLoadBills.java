@@ -45,12 +45,13 @@ public class SOLoadBills extends AbstractSO {
                     stavke.add(stavka);
                 }
             }
-            for (StavkaRacuna stavkaRacuna : stavke) {
-                stavkaRacuna.setRacun(bill);
-                bill.getStavkeRacuna().add(stavkaRacuna);
-                iznos += stavkaRacuna.getPice().getCena();
-                bill.setIznos(iznos);
-            }
+//            for (StavkaRacuna stavkaRacuna : stavke) {
+//                stavkaRacuna.setRacun(bill);
+//                bill.getStavkeRacuna().add(stavkaRacuna);
+//                iznos += stavkaRacuna.getPice().getCena();
+//                bill.setIznos(iznos);
+//            }
+            bill.setStavkeRacuna(stavke);
             bills.add(bill);
         }
         List<AbstractObject> konobari = ServerController.getServerController().getUsers();

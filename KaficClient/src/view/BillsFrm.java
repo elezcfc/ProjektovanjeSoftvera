@@ -39,6 +39,25 @@ public class BillsFrm extends javax.swing.JFrame {
         sto = s;
         ulogovani = k;
         r = new Racun();
+        r.setKonobar(ulogovani);
+        if(sto.isZauzet()){
+            btnAddBill.setEnabled(false);
+        }
+        try {
+            fixForm();
+        } catch (Exception ex) {
+            Logger.getLogger(BillsFrm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showConfirmDialog(this, ex);
+        }
+        calculateDailyRevenue();
+    }
+
+    BillsFrm(Sto sto, Konobar ulogovani, Racun racun) {
+        initComponents();
+        this.sto = sto;
+        this.ulogovani = ulogovani;
+        r = racun;
+        r.setKonobar(ulogovani);
         if(sto.isZauzet()){
             btnAddBill.setEnabled(false);
         }
@@ -250,10 +269,15 @@ public class BillsFrm extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (jTable1.getSelectedRow() != -1) {
             int index = jTable1.getSelectedRow();
-            Racun r = (Racun) btm.getBills().get(index);
-            NewBillFrm nbf = new NewBillFrm(sto, ulogovani, this, r);
-            nbf.setVisible(true);
-            this.setVisible(false);
+//            Racun r = (Racun) btm.getBills().get(index);
+            try {
+                r = (Racun) Controller.getControllerInstance().getBills(sto).get(index);
+                NewBillFrm nbf = new NewBillFrm(sto, ulogovani, this, r);
+                nbf.setVisible(true);
+                this.setVisible(false);
+            } catch (Exception ex) {
+                Logger.getLogger(BillsFrm.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Morate izabrati racun koji zelite da izmenite!");
             return;
@@ -272,6 +296,11 @@ public class BillsFrm extends javax.swing.JFrame {
                 calculateDailyRevenue();
                 System.out.println(s);
                 JOptionPane.showMessageDialog(this, "Brisanje racuna uspesno");
+                if(btm.getBills().isEmpty()){
+                    sto.setZauzet(false);
+                    Controller.getControllerInstance().updateTable(sto);
+                    btnAddBill.setEnabled(true);
+                }
             } catch (Exception ex) {
                 Logger.getLogger(BillsFrm.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, ex.getMessage());

@@ -22,7 +22,7 @@ public class SONewBill extends AbstractSO {
 
     private Racun racun;
     private Sto sto;
-    
+
     public SONewBill(Racun r) {
         racun = r;
         sto = racun.getSto();
@@ -35,11 +35,11 @@ public class SONewBill extends AbstractSO {
             dBBroker.commitTransaction();
             for (StavkaRacuna st : racun.getStavkeRacuna()) {
                 st.setRacun(racun1);
-                StavkaRacuna s = (StavkaRacuna) dBBroker.saveObject(st);
+                StavkaRacuna s = (StavkaRacuna) dBBroker.saveOrUpdateObject(st);
 //                racun1.getStavkeRacuna().add(s);
             }
             racun = racun1;
-            calculateBill(racun);
+//            calculateBill(racun);
             sto.getDnevniRacuni().add(racun);
 //            updateSto();
         } else {
@@ -55,20 +55,27 @@ public class SONewBill extends AbstractSO {
         for (StavkaRacuna s : racun.getStavkeRacuna()) {
             if (!stavke.contains(s)) {
 //                s.setBrStavkeRacuna(0);
-                StavkaRacuna st = (StavkaRacuna) dBBroker.saveObject(s);
+                StavkaRacuna st = (StavkaRacuna) dBBroker.saveOrUpdateObject(s);
                 noveStavke.add(st);
+            }else {
+                int index = stavke.indexOf(s);
+                if (s.getKolicina() != stavke.get(index).getKolicina()) {
+                    StavkaRacuna st = (StavkaRacuna) dBBroker.saveOrUpdateObject(s);
+                    noveStavke.add(st);
+                }
             }
         }
         for (StavkaRacuna stavka : stavke) {
             for (StavkaRacuna s : racun.getStavkeRacuna()) {
                 if (!racun.getStavkeRacuna().contains(stavka)) {
-                    if(stavka.getRacun().getRacunID() == s.getRacun().getRacunID())
-                    dBBroker.deleteObject(stavka);
+                    if (stavka.getRacun().getRacunID() == s.getRacun().getRacunID()) {
+                        dBBroker.deleteObject(stavka);
+                    }
                 }
 
             }
         }
-        calculateBill(racun);
+//        calculateBill(racun);
         racun = (Racun) dBBroker.saveOrUpdateObject(racun);
 //        sto.getDnevniRacuni().add(racun);
         //updateSto();
@@ -81,8 +88,8 @@ public class SONewBill extends AbstractSO {
             StavkaRacuna s = (StavkaRacuna) stavkaRacuna;
             stavke.add(s);
         }
-        for(StavkaRacuna s: stavke){
-            List<AbstractObject> pica =  dBBroker.getObjectByPK(new Pice(), String.valueOf(s.getPice().getPiceID()), 1);
+        for (StavkaRacuna s : stavke) {
+            List<AbstractObject> pica = dBBroker.getObjectByPK(new Pice(), String.valueOf(s.getPice().getPiceID()), 1);
             Pice p = (Pice) pica.get(0);
             s.setPice(p);
         }
@@ -91,9 +98,9 @@ public class SONewBill extends AbstractSO {
 
     private void calculateBill(Racun r) {
         double iznos = 0;
-        if(!r.getStavkeRacuna().isEmpty()){
+        if (!r.getStavkeRacuna().isEmpty()) {
             for (StavkaRacuna s : r.getStavkeRacuna()) {
-                iznos+=s.getPice().getCena();
+                iznos += s.getPice().getCena();
             }
         }
         racun.setIznos(iznos);

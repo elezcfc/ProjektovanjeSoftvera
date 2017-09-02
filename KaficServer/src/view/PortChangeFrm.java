@@ -6,6 +6,7 @@
 package view;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -22,6 +23,11 @@ public class PortChangeFrm extends javax.swing.JFrame {
      */
     public PortChangeFrm() {
         initComponents();
+        try {
+            fixForm();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Greska pri citanju parametara", 1);
+        }
     }
 
     /**
@@ -37,7 +43,7 @@ public class PortChangeFrm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         portJtf = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jButton1.setText("Sacuvaj");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -137,4 +143,10 @@ public class PortChangeFrm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField portJtf;
     // End of variables declaration//GEN-END:variables
+
+    private void fixForm() throws IOException {
+        ParamConfigurator pc = new ParamConfigurator();
+        int port = pc.readPort();
+        portJtf.setText(port+"");
+    }
 }

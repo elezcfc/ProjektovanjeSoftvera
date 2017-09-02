@@ -37,6 +37,7 @@ public class NewBillFrm extends javax.swing.JFrame {
     private Racun racun;
     private double iznos = 0;
     private JFrame parent;
+    boolean unet = false;
 
     public NewBillFrm() {
         initComponents();
@@ -62,6 +63,7 @@ public class NewBillFrm extends javax.swing.JFrame {
         this.ulogovani = ulogovani;
         this.sto = sto;
         racun = r;
+        racun.setKonobar(ulogovani);
         this.parent = parent;
         try {
             fixUpdateForm();
@@ -95,8 +97,9 @@ public class NewBillFrm extends javax.swing.JFrame {
         jcbPica = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         naplatiBtn = new javax.swing.JButton();
+        btnNazad = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
         jLabel1.setText("Konobar:");
 
@@ -168,6 +171,13 @@ public class NewBillFrm extends javax.swing.JFrame {
             }
         });
 
+        btnNazad.setText("Nazad");
+        btnNazad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNazadActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,15 +189,16 @@ public class NewBillFrm extends javax.swing.JFrame {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnSaveBill))
+                            .addComponent(naplatiBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(btnAddStavka, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
                                     .addComponent(btnRemoveStavka, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnSaveBill))
-                            .addComponent(naplatiBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(btnNazad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -234,7 +245,9 @@ public class NewBillFrm extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnSaveBill)
                         .addGap(18, 18, 18)
-                        .addComponent(naplatiBtn)))
+                        .addComponent(naplatiBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnNazad)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -245,10 +258,10 @@ public class NewBillFrm extends javax.swing.JFrame {
         // TODO add your handling code here:
         Pice p = (Pice) jcbPica.getSelectedItem();
 
-        stm.dodajStavkuRacuna(racun, p);
+        stm.dodajStavkuRacuna(p);
         racun.setStavkeRacuna(stm.getListStavki());
 //        iznos = Integer.parseInt(jtfIznos.getText());
-        iznos += p.getCena();
+        iznos = stm.getRacun().getIznos();
         jtfIznos.setText(iznos + "");
         JOptionPane.showMessageDialog(this, "Stavka je uspesno dodata");
     }//GEN-LAST:event_btnAddStavkaActionPerformed
@@ -274,10 +287,12 @@ public class NewBillFrm extends javax.swing.JFrame {
             return;
         } else {
             try {
-                racun.setIznos(Double.parseDouble(jtfIznos.getText()));
+                racun.setIznos(iznos);
                 racun.setSto(sto);
                 Racun r = Controller.getControllerInstance().createBill(racun);
+                r.setKonobar(ulogovani);
                 racun = r;
+                sto.getDnevniRacuni().add(racun);
                 JOptionPane.showMessageDialog(this, "Uspesno ste kreirali racun");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Kreiranje racuna nije uspelo!");
@@ -286,28 +301,52 @@ public class NewBillFrm extends javax.swing.JFrame {
         }
         this.setVisible(false);
 //        parent.setVisible(true);
-        BillsFrm bf = new BillsFrm(sto, ulogovani);
+        BillsFrm bf = new BillsFrm(sto, ulogovani, racun);
         bf.setVisible(true);
     }//GEN-LAST:event_btnSaveBillActionPerformed
 
     private void naplatiBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_naplatiBtnActionPerformed
         try {
             // TODO add your handling code here:
-            sto.setZauzet(false);
-            Controller.getControllerInstance().updateTable(sto);
+            if(racun.getStavkeRacuna() == null || racun.getStavkeRacuna().isEmpty() || stm.getListStavki().isEmpty()){
+                JOptionPane.showMessageDialog(parent, "Unesite stavke racuna pre naplate!");
+            }else{
+                sto.setZauzet(false);
+                Controller.getControllerInstance().updateTable(sto);
 
-            racun.setPlacen(1);
+                racun.setPlacen(1);
 
-            Racun r = Controller.getControllerInstance().createBill(racun);
-            racun = r;
-            JOptionPane.showMessageDialog(this, "Uspesno izvrsena naplata");
-            this.setVisible(false);
-            BillsFrm bf = new BillsFrm(sto, ulogovani);
-            bf.setVisible(true);
+                Racun r = Controller.getControllerInstance().createBill(racun);
+                racun = r;
+                JOptionPane.showMessageDialog(this, "Uspesno izvrsena naplata");
+                this.setVisible(false);
+                BillsFrm bf = new BillsFrm(sto, ulogovani);
+                bf.setVisible(true);
+            }
         } catch (Exception ex) {
             Logger.getLogger(NewBillFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_naplatiBtnActionPerformed
+
+    private void btnNazadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNazadActionPerformed
+        // TODO add your handling code here:
+        if (racun.getPlacen() == 0) {
+            int option = JOptionPane.showConfirmDialog(this, "Da li zelite da ostavite racun neplacenim?");
+            if (option == JOptionPane.YES_OPTION) {
+                this.setVisible(false);
+                sto.setZauzet(true);
+                BillsFrm bf = new BillsFrm(sto, ulogovani, racun);
+                bf.setVisible(true);
+            } else if (option == JOptionPane.NO_OPTION) {
+                this.setVisible(false);
+//        parent.setVisible(true);
+                sto.setZauzet(false);
+                BillsFrm bf = new BillsFrm(sto, ulogovani, racun);
+                bf.setVisible(true);
+            }
+        }
+
+    }//GEN-LAST:event_btnNazadActionPerformed
 
     /**
      * @param args the command line arguments
@@ -347,6 +386,7 @@ public class NewBillFrm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStavka;
+    private javax.swing.JButton btnNazad;
     private javax.swing.JButton btnRemoveStavka;
     private javax.swing.JButton btnSaveBill;
     private javax.swing.JLabel jLabel1;

@@ -7,6 +7,7 @@ package dbbroker;
 
 import domen.AbstractObject;
 import domen.Konobar;
+import domen.StavkaRacuna;
 import exception.ServerException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -99,7 +100,19 @@ public class DBBroker {
                 upit = String.format("INSERT INTO %s VALUES (%s)", object.getTableName(), object.getParams());
             }
             for (AbstractObject abstractObject : lista) {
-                if (abstractObject.getPKValue() == object.getPKValue()) {
+                if (object instanceof StavkaRacuna) {
+                    if (abstractObject.getFKValue() == object.getFKValue() && abstractObject.getPKValue() == object.getPKValue()) {
+                        upit = String.format("UPDATE %s SET %s WHERE %s=%s AND %s=%s", object.getTableName(), object.getUpdate(), object.getPK(), object.getPKValue(), object.getFK(), object.getFKValue());
+                        break;
+                    }else{
+                        if(!doubleCheckList(lista, object)){
+                            saveObject(object);
+                            return object;
+                        }else{
+                            continue;
+                        }
+                    }
+                } else if (abstractObject.getPKValue() == object.getPKValue()) {
                     System.out.println(abstractObject.getPKValue());
                     System.out.println(object.getPKValue());
                     tipUpita = "UPDATE";
@@ -222,10 +235,17 @@ public class DBBroker {
         List<String> list = pc.readDBParams();
         String user = list.get(0);
         String pass = list.get(1);
-        String url = "jdbc:mysql://localhost:"+list.get(3)+"/"+list.get(2); //+port/baza
+        String url = "jdbc:mysql://localhost:" + list.get(3) + "/" + list.get(2); //+port/baza
         System.out.println(user);
         System.out.println(pass);
         System.out.println(url);
         connection = DriverManager.getConnection(url, user, pass);
+    }
+
+    private boolean doubleCheckList(List<AbstractObject> lista, AbstractObject object) {
+        for (AbstractObject abstractObject : lista) {
+            if(lista.contains(object))return true;
+        }
+        return false;
     }
 }

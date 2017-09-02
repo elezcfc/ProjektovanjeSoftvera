@@ -84,7 +84,7 @@ public class Racun extends AbstractObject {
 
     @Override
     public String getUpdate() {
-        return String.format("iznos='%s', placen='%s'", iznos, placen);
+        return String.format("iznos='%s', placen='%s', konobarID = '%s'", iznos, placen, konobar.getKonobarID());
     }
 
     @Override

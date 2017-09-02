@@ -20,10 +20,13 @@ import javax.swing.table.AbstractTableModel;
 public class StavkeTableModel extends AbstractTableModel {
 
     private List<StavkaRacuna> listStavki;
-    int brStavke = 0;
+    int brStavke = 1;
+    private Racun racun;
     public StavkeTableModel(Racun racun) {
+        this.racun = racun;
         this.listStavki = racun.getStavkeRacuna();
-        brStavke = racun.getStavkeRacuna().size();
+//        brStavke = racun.getStavkeRacuna().size();
+        brStavke = listStavki.size();
     }
 
     @Override
@@ -33,7 +36,7 @@ public class StavkeTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -44,6 +47,8 @@ public class StavkeTableModel extends AbstractTableModel {
                 return sr.getBrStavkeRacuna();
             case 1:
                 return sr.getPice().getNazivPica();
+            case 2:
+                return sr.getKolicina();
             default:
                 return "N/A";
         }
@@ -55,27 +60,69 @@ public class StavkeTableModel extends AbstractTableModel {
             case 0:
                 return "Broj stavke racuna";
             case 1:
-                return "Pice";   
+                return "Pice";  
+            case 2:
+                return "Kolicina";
             default:
                 return "N/A";
         }
     }
     
-    public void dodajStavkuRacuna(Racun racun, Pice p) {
-        StavkaRacuna stavka = new StavkaRacuna(racun, p, brStavke);
-        listStavki.add(stavka);
+    public void dodajStavkuRacuna(Pice p) {
+        StavkaRacuna s = null;
+        StavkaRacuna novaSR = null;
+        for(StavkaRacuna sr: racun.getStavkeRacuna()){
+            if(sr.getPice().equals(p)){
+                s = sr;
+                break;
+            }
+        }
+        if(s == null){
+            novaSR = new StavkaRacuna();
+            novaSR.setRacun(racun);
+            novaSR.setBrStavkeRacuna(racun.getStavkeRacuna().size()+1);
+            novaSR.setPice(p);
+            System.out.println(brStavke);
+            System.out.println(racun.getStavkeRacuna().size()+1);
+            novaSR.setKolicina(1);
+//            racun.getStavkeRacuna().add(novaSR);
+            listStavki.add(novaSR);
+        }else{
+            s.setKolicina(s.getKolicina()+1);
+        }
         brStavke++;
+        if(novaSR != null){
+            racun.setIznos(racun.getIznos()+p.getCena());
+        }
+        if(s != null){
+            racun.setIznos(racun.getIznos()+p.getCena());
+        }
         fireTableDataChanged();
     }
 
     public void obrisiStavkuRacuna(int index) {
-        listStavki.remove(index);
+        StavkaRacuna s = listStavki.get(index);
+        if(s.getKolicina() > 1){
+            int kol = s.getKolicina();
+            listStavki.get(index).setKolicina(--kol);
+            racun.setIznos(racun.getIznos()- s.getPice().getCena());
+        }else if (s.getKolicina() == 1){
+            listStavki.remove(index);
+        }
         brStavke--;
         fireTableDataChanged();
     }
 
     public List<StavkaRacuna> getListStavki() {
         return listStavki;
+    }
+
+    public Racun getRacun() {
+        return racun;
+    }
+
+    public void setRacun(Racun racun) {
+        this.racun = racun;
     }
 
 }

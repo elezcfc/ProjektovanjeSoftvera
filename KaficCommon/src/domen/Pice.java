@@ -116,7 +116,7 @@ public class Pice extends AbstractObject {
 
     @Override
     public String toString() {
-        return nazivPica+" : "+cena;
+        return nazivPica+": "+cena;
     }
 
     @Override
