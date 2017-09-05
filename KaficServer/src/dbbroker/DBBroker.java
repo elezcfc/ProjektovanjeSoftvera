@@ -153,12 +153,17 @@ public class DBBroker {
 
     public void deleteObject(AbstractObject object) throws ServerException {
         try {
-            String upit = String.format("DELETE FROM %s WHERE %s = %s", object.getTableName(), object.getPK(), object.getPKValue());
-            Statement s = connection.createStatement();
-            System.out.println(upit);
-            s.executeUpdate(upit);
-            commitTransaction();
-            s.close();
+            String upit;
+            if(object instanceof StavkaRacuna){
+                upit = String.format("DELETE FROM %s WHERE %s=%s AND %s=%s", object.getTableName(), object.getPK(), object.getPKValue(), object.getFK(), object.getFKValue());
+            }else{
+                upit = String.format("DELETE FROM %s WHERE %s = %s", object.getTableName(), object.getPK(), object.getPKValue());
+                Statement s = connection.createStatement();
+                System.out.println(upit);
+                s.executeUpdate(upit);
+                commitTransaction();
+                s.close();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServerException(ex.getMessage());

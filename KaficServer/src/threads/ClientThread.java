@@ -5,6 +5,7 @@
  */
 package threads;
 
+import com.sun.corba.se.impl.io.OutputStreamHook;
 import constants.Constants;
 import controller.ServerController;
 import domen.AbstractObject;
@@ -16,7 +17,10 @@ import exception.ServerException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.rmi.ServerError;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,7 +52,7 @@ class ClientThread extends Thread {
         try {
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
-            while (true) {
+            while (!isInterrupted() || !socket.isClosed()) {
                 System.out.println("Cekam objekat!");
                 ClientTransfer ct = (ClientTransfer) in.readUnshared();
                 ServerTransfer st = new ServerTransfer();
@@ -86,9 +90,9 @@ class ClientThread extends Thread {
                             s = (Sto) ct.getParametar();
                             sto = s.getStoID();
                             List<AbstractObject> listOfBills = ServerController.getServerController().getBills(s);
-                            if(listOfBills == null || listOfBills.isEmpty()){
+                            if (listOfBills == null || listOfBills.isEmpty()) {
                                 st.setData("Ne postoji trazena vrednost!");
-                            }else{
+                            } else {
                                 st.setData(listOfBills);
                             }
                             break;
@@ -96,50 +100,50 @@ class ClientThread extends Thread {
                             Racun r = (Racun) ct.getParametar();
                             r.setKonobar(konobar);
                             Racun racunUpd = ServerController.getServerController().createBill(r);
-                            if(racunUpd != null){
+                            if (racunUpd != null) {
                                 st.setData(racunUpd);
                             }
                             break;
                         case Constants.DELETE_BILL:
                             Racun racun = (Racun) ct.getParametar();
                             String message = ServerController.getServerController().deleteBill(racun);
-                            if(message != null){
+                            if (message != null) {
                                 st.setData(message);
                             }
                             break;
                         case Constants.SEARCH_DRINK:
-                            List<AbstractObject> filteredList = ServerController.getServerController().searchDrink((String)ct.getParametar());
-                            if(filteredList != null){
+                            List<AbstractObject> filteredList = ServerController.getServerController().searchDrink((String) ct.getParametar());
+                            if (filteredList != null) {
                                 st.setSuccesfull(1);
                                 st.setData(filteredList);
                             }
                             break;
                         case Constants.SEARCH_BILL:
-                            List<AbstractObject> filteredListBill = ServerController.getServerController().searchBill((String)ct.getParametar(), new Sto(sto, 0));
-                            if(filteredListBill != null){
+                            List<AbstractObject> filteredListBill = ServerController.getServerController().searchBill((String) ct.getParametar(), new Sto(sto, 0));
+                            if (filteredListBill != null) {
                                 st.setSuccesfull(1);
                                 st.setData(filteredListBill);
-                            }else{
+                            } else {
                                 st.setSuccesfull(0);
                                 st.setException(new ServerException("Nije nadjen ni jedan rezultat!"));
                             }
                             break;
                         case Constants.CREATE_TABLE:
-                            AbstractObject absSto = ServerController.getServerController().createTable((Sto)ct.getParametar());
-                            if(absSto == null){
+                            AbstractObject absSto = ServerController.getServerController().createTable((Sto) ct.getParametar());
+                            if (absSto == null) {
                                 st.setSuccesfull(0);
                                 st.setException(new ServerException("Neuspesno kreiranje stola!"));
-                            }else{
+                            } else {
                                 st.setData(absSto);
                             }
                             break;
                         case Constants.DELETE_TABLE:
                             Sto deleteTable = (Sto) ct.getParametar();
                             Sto table = ServerController.getServerController().deleteTable(deleteTable);
-                            if(table == null){
+                            if (table == null) {
                                 st.setSuccesfull(0);
                                 st.setException(new ServerException("Neuspesno brisanje stola"));
-                            }else{
+                            } else {
                                 st.setSuccesfull(1);
                                 st.setData(table);
                             }
@@ -147,23 +151,26 @@ class ClientThread extends Thread {
                         case Constants.UPDATE_TABLE:
                             Sto stoo = (Sto) ct.getParametar();
                             Sto updateTable = ServerController.getServerController().updateTableSum(stoo);
-                            if(updateTable == null){
+                            if (updateTable == null) {
                                 st.setSuccesfull(0);
                                 st.setException(new ServerException("Neuspesan update"));
-                            }else{
+                            } else {
                                 st.setSuccesfull(1);
                                 st.setData(updateTable);
                             }
                             break;
                         case Constants.RESET_TABLES:
                             String poruka = ServerController.getServerController().resetTables();
-                            if(poruka != null && poruka != ""){
+                            if (poruka != null && poruka != "") {
                                 st.setSuccesfull(1);
                                 st.setData(poruka);
-                            }else{
+                            } else {
                                 st.setSuccesfull(0);
                                 st.setException(new ServerException("Reset stolova nije uspeo!"));
                             }
+                        case Constants.CHECK:
+                            st.setSuccesfull(1);
+                            st.setException(new ServerException("Server radi!"));
                     }
                     st.setSuccesfull(1);
 
@@ -176,9 +183,26 @@ class ClientThread extends Thread {
 //                }
                 out.writeUnshared(st);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+//            ServerTransfer st = new ServerTransfer();
+//            st.setException(new ServerException("Server ne radi!"));
+//            out.writeUnshared(st);
+//            socket.close();
+        } catch (SocketException ex) {
+            try {
+                Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Klijent odlazi...");
+                ServerController.getServerController().logoutUser(konobar);
+//                sendNotification();
+//                in.close();
+//                out.close();
+                socket.close();
+                loggedInClients.remove(this);
+            } catch (IOException ex1) {
+                Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex1);
+            }
         } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -191,4 +215,65 @@ class ClientThread extends Thread {
         this.socket = socket;
     }
 
+//    void close() throws IOException {
+//        ServerTransfer st = new ServerTransfer();
+//        st.setException(new ServerException("Server ne radi!"));
+//        out.writeUnshared(st);
+//        socket.close();
+//    }
+//    private void sendNotification() throws IOException {
+//        
+//        Socket socket = ss.accept();
+//        ObjectOutputStream out = (ObjectOutputStream) socket.getOutputStream();
+//        ServerTransfer st = new ServerTransfer();
+//        st.setException(new ServerException("server ne radi"));
+//        st.setData("Server ne radi");
+//        out.writeUnshared(st);
+//    }
+    void exit() throws IOException {
+        int port = 9001;
+        Socket socket = new Socket("localhost", port);
+        System.out.println("Postavljen soket");
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        ClientTransfer ct = new ClientTransfer();
+        ct.setOperation(404);
+        out.writeUnshared(ct);
+        out.close();
+        socket.close();
+    }
+    
+    public void test(){
+        try {
+            Socket socket = new Socket("localhost", 2000);
+            System.out.println("Postavljen soket");
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            ClientTransfer ct = new ClientTransfer();
+            ct.setOperation(222);
+            out.writeUnshared(ct);
+            out.close();
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public synchronized void run() {
+//                try {
+//                    ServerSocket sSocket = new ServerSocket(9001);
+//                    Socket socket = sSocket.accept();
+//                    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+//                    ServerTransfer st = new ServerTransfer();
+//                    st.setException(new ServerException("server ne radi"));
+//                    st.setData("Server ne radi");
+//                    out.writeUnshared(st);
+//                    out.flush();
+//                    System.out.println("Poslat info");
+//                    out.close();
+//                    socket.close();
+//                } catch (IOException ex) {
+//                    Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        };

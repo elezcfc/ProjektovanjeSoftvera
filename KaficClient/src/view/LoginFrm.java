@@ -9,12 +9,23 @@ import communication.Communication;
 import controller.Controller;
 import domen.Konobar;
 import java.awt.Color;
+import java.awt.Window;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.ConnectException;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.border.LineBorder;
+import thread.ListenerThread;
+import transfer.ClientTransfer;
 
 /**
  *
@@ -25,8 +36,11 @@ public class LoginFrm extends javax.swing.JFrame {
     /**
      * Creates new form LoginFrm
      */
+    Socket socket;
+    
     public LoginFrm() {
         initComponents();
+        fixWindowListener();
     }
 
     /**
@@ -38,18 +52,32 @@ public class LoginFrm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        userTf = new javax.swing.JTextField();
-        passTf = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         loginBtn = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        userTf = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        passTf = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Login ");
 
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel3.setText("Dobrodosli!");
+
+        loginBtn.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        loginBtn.setText("Ulogujte se!");
+        loginBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginBtnActionPerformed(evt);
+            }
+        });
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Unesite  podatke za logovanje"));
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("Korisnicko ime:");
-
-        jLabel2.setText("Korisnicka sifra:");
 
         userTf.setText("stefan");
         userTf.addActionListener(new java.awt.event.ActionListener() {
@@ -58,57 +86,67 @@ public class LoginFrm extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel2.setText("Korisnicka sifra:");
+
         passTf.setText("stefan");
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel3.setText("Dobrodosli!");
-
-        loginBtn.setText("Ulogujte se!");
-        loginBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginBtnActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(userTf, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(passTf, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(37, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(userTf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(passTf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(passTf, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(56, 56, 56)
-                        .addComponent(userTf, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(loginBtn)
-                    .addComponent(jLabel3))
-                .addGap(157, 157, 157))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(146, 146, 146)
+                        .addComponent(loginBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(164, 164, 164)
+                        .addComponent(jLabel3)))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(48, 48, 48)
+                .addGap(40, 40, 40)
                 .addComponent(jLabel3)
-                .addGap(37, 37, 37)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(userTf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(37, 37, 37)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(passTf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
-                .addComponent(loginBtn)
-                .addGap(46, 46, 46))
+                .addGap(49, 49, 49)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(loginBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45))
         );
 
         pack();
@@ -119,26 +157,38 @@ public class LoginFrm extends javax.swing.JFrame {
             startSocket();
         } catch (IOException ex) {
             Logger.getLogger(LoginFrm.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LoginFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
         resetBorder();
         String username = userTf.getText();
         String password = passTf.getText();
-        
-        if(username == null){
+        if (username == null) {
             userTf.setBorder(new LineBorder(Color.red));
         }
-        if(password == null){
+        if (password == null) {
             passTf.setBorder(new LineBorder(Color.red));
         }
-        if(username != null && password != null){
+        if (username != null && password != null) {
             try {
                 Konobar k = (Konobar) Controller.getControllerInstance().logInUser(username, password);
+//                isServerWorking();
                 UserPageFrm p = new UserPageFrm(k, this, true);
                 p.setVisible(true);
                 this.setVisible(false);
+                ListenerThread lt = new ListenerThread();
+                lt.start();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,ex.getMessage(),"Unesite tacne podatke za logovanje", 0);
-                Logger.getLogger(LoginFrm.class.getName()).log(Level.SEVERE, null, ex);
+                if (ex.getMessage() == null) {
+                    JOptionPane.showMessageDialog(this, "Server ne radi", "Greska pri logovanju", 0);
+                } else {
+                    if (ex instanceof ConnectException || ex instanceof SocketException) {
+                        JOptionPane.showMessageDialog(this, "Server ne radi", "Greska pri logovanju", 0);
+                    } else {
+                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Greska pri logovanju", 0);
+                        Logger.getLogger(LoginFrm.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
     }//GEN-LAST:event_loginBtnActionPerformed
@@ -186,21 +236,115 @@ public class LoginFrm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton loginBtn;
-    private javax.swing.JTextField passTf;
+    private javax.swing.JPasswordField passTf;
     private javax.swing.JTextField userTf;
     // End of variables declaration//GEN-END:variables
 
-    private void startSocket() throws IOException {
-        if (Communication.getInstance().getSocket() == null) {
-            System.out.println("Postavljam socket");
-            Socket socket = new Socket("127.0.0.1", 9000);
-            Communication.getInstance().setSocket(socket);
-            System.out.println("Postavio socket na portu 9000");
-        }
+    private void startSocket() throws IOException, InterruptedException {
+        System.out.println("Postavljam socket");
+        socket = new Socket("127.0.0.1", 9000);
+        Communication.getInstance().setSocket(socket);
+//        startCheck();
+        System.out.println("Postavio socket na portu 9000");
     }
+
     private void resetBorder() {
         userTf.setBorder(new LineBorder(Color.black));
         passTf.setBorder(new LineBorder(Color.black));
+    }
+
+//    private void startCheck() {
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public synchronized void run() {
+//                try {
+//                    Socket socket = new Socket("127.0.0.1", 9001);
+////                    Communication.getInstance().setSocket(socket);
+////                    if (Controller.getControllerInstance().checkServer()) {
+////                        System.out.println("Server radi");
+////                    }
+//                } catch (Exception ex) {
+//                    Logger.getLogger(LoginFrm.class.getName()).log(Level.SEVERE, null, ex);
+//                    Window[] windows = Window.getWindows();
+//                    for (Window window : windows) {
+//                        window.dispose();
+//                    }
+//                    LoginFrm lf = new LoginFrm();
+//                    lf.setVisible(true);
+//                    try {
+//                        this.wait();
+//                    } catch (InterruptedException ex1) {
+//                        Logger.getLogger(LoginFrm.class.getName()).log(Level.SEVERE, null, ex1);
+//                    }
+//                }
+//            }
+//        }, 1 * 1000, 1 * 1000);
+//    }
+
+//    private void isServerWorking() throws IOException, ClassNotFoundException {
+//        ServerSocket serverSocket = new ServerSocket(2000);
+//        Socket socket = serverSocket.accept();
+//        System.out.println("Soket osluskuje");
+//        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+//        ClientTransfer ct = (ClientTransfer) in.readUnshared();
+//        System.out.println(ct.toString());
+//        if (ct.getOperation() == 404) {
+//            Window[] windows = Window.getWindows();
+//            for (Window window : windows) {
+//                window.dispose();
+//            }
+//            LoginFrm lf = new LoginFrm();
+//            JOptionPane.showMessageDialog(lf, "Server je ugasen!");
+//            lf.setVisible(true);
+//        }
+//    }
+
+    private void fixWindowListener() {
+        this.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    if(socket != null){
+                        socket.close();
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(LoginFrm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(!socket.isClosed()){
+                    try {
+                        socket.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(LoginFrm.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
     }
 }

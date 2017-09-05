@@ -8,9 +8,16 @@ package view;
 import controller.Controller;
 import domen.Konobar;
 import java.awt.Frame;
+import java.awt.Window;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.rmi.ServerException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import transfer.ClientTransfer;
 
 /**
  *
@@ -23,6 +30,7 @@ public class UserPageFrm extends javax.swing.JFrame {
      */
     private Konobar ulogovani;
     private Frame parent;
+
     public UserPageFrm() {
         initComponents();
     }
@@ -32,6 +40,7 @@ public class UserPageFrm extends javax.swing.JFrame {
         initComponents();
         ulogovani = k;
         fixForm(ulogovani);
+//            isServerWorking();
     }
 
     /**
@@ -195,5 +204,24 @@ public class UserPageFrm extends javax.swing.JFrame {
 
     private void fixForm(Konobar k) {
         jMenuUser.setText(k.getName());
+    }
+
+    private synchronized void isServerWorking() throws IOException, ClassNotFoundException {
+        ServerSocket serverSocket = new ServerSocket(2000);
+        Socket socket = serverSocket.accept();
+        System.out.println("Soket osluskuje");
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+        ClientTransfer ct = (ClientTransfer) in.readUnshared();
+        System.out.println(ct.toString());
+        if (ct.getOperation() == 404) {
+            Window[] windows = Window.getWindows();
+            for (Window window : windows) {
+                window.dispose();
+            }
+            LoginFrm lf = new LoginFrm();
+            JOptionPane.showMessageDialog(lf, "Server je ugasen!");
+            lf.setVisible(true);
+            this.setVisible(false);
+        }
     }
 }

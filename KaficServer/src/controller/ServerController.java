@@ -209,7 +209,7 @@ public class ServerController {
             Sto s = (Sto) table;
             iznos += s.getUkupanDnevniIznos();
             s.setZauzet(false); //*
-            s.setUkupanDnevniIznos(0); //*
+//            s.setUkupanDnevniIznos(0); 
 //            List<AbstractObject> bills = getBills(s);
 //            for (AbstractObject bill : bills) {
 //                Racun r = (Racun) bill;

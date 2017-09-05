@@ -3,10 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Fax/IV%20Godina/Drugi%20semestar/Projektovanje%20softvera/Projekat%20-%20Elez%20Stefan/KaficServer/src/view/PortChangeFrm.java</file>
-            <file>file:/D:/Fax/IV%20Godina/Drugi%20semestar/Projektovanje%20softvera/Projekat%20-%20Elez%20Stefan/KaficServer/src/system_operation/SONewBill.java</file>
-            <file>file:/D:/Fax/IV%20Godina/Drugi%20semestar/Projektovanje%20softvera/Projekat%20-%20Elez%20Stefan/KaficServer/src/dbbroker/DBBroker.java</file>
-            <file>file:/D:/Fax/IV%20Godina/Drugi%20semestar/Projektovanje%20softvera/Projekat%20-%20Elez%20Stefan/KaficServer/src/threads/ClientThread.java</file>
+            <file>file:/D:/Fax/IV%20Godina/Drugi%20semestar/Projektovanje%20softvera/Projekat%20-%20Elez%20Stefan/KaficServer/src/system_operation/SOSearchDrinks.java</file>
+            <file>file:/D:/Fax/IV%20Godina/Drugi%20semestar/Projektovanje%20softvera/Projekat%20-%20Elez%20Stefan/KaficServer/src/system_operation/SOSearchBills.java</file>
         </group>
     </open-files>
 </project-private>

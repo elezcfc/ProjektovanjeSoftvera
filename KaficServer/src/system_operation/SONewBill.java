@@ -32,7 +32,7 @@ public class SONewBill extends AbstractSO {
     protected void runSpecificOperation() throws ServerException {
         if (racun.getRacunID() == 0) {
             Racun racun1 = (Racun) dBBroker.saveOrUpdateObject(racun);
-            dBBroker.commitTransaction();
+//            dBBroker.commitTransaction();
             for (StavkaRacuna st : racun.getStavkeRacuna()) {
                 st.setRacun(racun1);
                 StavkaRacuna s = (StavkaRacuna) dBBroker.saveOrUpdateObject(st);

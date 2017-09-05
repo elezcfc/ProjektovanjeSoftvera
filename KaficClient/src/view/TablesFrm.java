@@ -20,6 +20,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.rmi.ServerException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +53,11 @@ public class TablesFrm extends javax.swing.JFrame {
             fixTables();
         } catch (Exception ex) {
             Logger.getLogger(TablesFrm.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showConfirmDialog(this, ex);
+            JOptionPane.showMessageDialog(this, ex, "Server ne radi!", 1);
+//            LoginFrm lf = new LoginFrm();
+//            lf.setVisible(true);
+//            this.setVisible(false);
+//            dispose();
         }
     }
 
@@ -230,7 +235,7 @@ public class TablesFrm extends javax.swing.JFrame {
 
     private void btnAllRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAllRevenueActionPerformed
         // TODO add your handling code here:
-        int option = JOptionPane.showConfirmDialog(this, "Ovim cete resetovati sve stolove i racune i dobiti presek danasnjeg dana. Da li zelite da nastavite?");
+        int option = JOptionPane.showConfirmDialog(this, "Ovim cete dobiti presek danasnjeg dana. Da li zelite da nastavite?");
         if(option == JOptionPane.YES_OPTION){
             try {
                 String poruka = Controller.getControllerInstance().resetTables();

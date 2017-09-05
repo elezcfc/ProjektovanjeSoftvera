@@ -26,4 +26,5 @@ public interface Constants {
     public static final int DELETE_TABLE = 13;
     public static final int UPDATE_TABLE = 14;
     public static final int RESET_TABLES = 15;
+    public static final int CHECK = 16;
 }

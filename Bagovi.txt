@@ -1,0 +1,5 @@
+izmena pica u filtriranoj listi
+yes no u JOptionPane
+poruka za reset stolova
+moze brisati samo onaj konobar koji je uneo promenu
+poruka kad server ne radi

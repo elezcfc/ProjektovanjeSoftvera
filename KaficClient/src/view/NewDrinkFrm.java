@@ -42,6 +42,7 @@ public class NewDrinkFrm extends javax.swing.JFrame {
         jbtnSaveDring = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Unos novog pica");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("Unesite novo pice");
@@ -117,6 +118,12 @@ public class NewDrinkFrm extends javax.swing.JFrame {
                     Pice poruka = Controller.getControllerInstance().createDrink(p);
                     if (poruka != null) {
                         JOptionPane.showMessageDialog(this, "Uspesno ste kreirali pice!");
+                        int option  = JOptionPane.showConfirmDialog(rootPane, "Da li zelite da unesete novo pice?");
+                        if(option == JOptionPane.YES_OPTION){
+                            return;
+                        }else{
+                            dispose();
+                        }
                     }
                 } else {
                     JOptionPane.showConfirmDialog(this, "Morate uneti broj za cenu.");

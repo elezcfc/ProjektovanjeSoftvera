@@ -83,8 +83,6 @@ public class BillsFrm extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         btnAddBill = new javax.swing.JButton();
         btnDeleteBill = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jLblSumBill = new javax.swing.JLabel();
         btnUpdateBill = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -94,9 +92,13 @@ public class BillsFrm extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         btnSearch = new javax.swing.JButton();
         jtfSearch = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLblSumBill = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        jTable1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -123,10 +125,6 @@ public class BillsFrm extends javax.swing.JFrame {
                 btnDeleteBillActionPerformed(evt);
             }
         });
-
-        jLabel2.setText("Ukupan dnevni iznos:");
-
-        jLblSumBill.setText("jLabel3");
 
         btnUpdateBill.setText("Dodaj u racun");
         btnUpdateBill.addActionListener(new java.awt.event.ActionListener() {
@@ -182,6 +180,33 @@ public class BillsFrm extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jLabel2.setText("Ukupan dnevni iznos:");
+
+        jLblSumBill.setText("jLabel3");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(jLblSumBill)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLblSumBill))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -200,16 +225,13 @@ public class BillsFrm extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLblSumBill))
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(45, 45, 45)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnUpdateBill, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(btnAddBill)
-                                    .addComponent(btnDeleteBill, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(btnDeleteBill, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 31, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -218,30 +240,27 @@ public class BillsFrm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(btnSearch)
-                            .addComponent(jtfSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jtfSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(30, 30, 30))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAddBill)
                         .addGap(45, 45, 45)
                         .addComponent(btnUpdateBill)
                         .addGap(52, 52, 52)
-                        .addComponent(btnDeleteBill)
-                        .addGap(109, 109, 109))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLblSumBill))
-                .addContainerGap(14, Short.MAX_VALUE))
+                        .addComponent(btnDeleteBill)))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -290,16 +309,20 @@ public class BillsFrm extends javax.swing.JFrame {
             try {
                 int index = jTable1.getSelectedRow();
                 Racun r = (Racun) btm.getBills().get(index);
-                String s = Controller.getControllerInstance().deleteBill(r);
-                btm.getBills().remove(index);
-                btm.fireTableDataChanged();
-                calculateDailyRevenue();
-                System.out.println(s);
-                JOptionPane.showMessageDialog(this, "Brisanje racuna uspesno");
-                if(btm.getBills().isEmpty()){
-                    sto.setZauzet(false);
-                    Controller.getControllerInstance().updateTable(sto);
-                    btnAddBill.setEnabled(true);
+                if(r.getPlacen() == 1){
+                    JOptionPane.showMessageDialog(rootPane, "Ne mozete obrisati placen racun");
+                }else{
+                    String s = Controller.getControllerInstance().deleteBill(r);
+                    btm.getBills().remove(index);
+                    btm.fireTableDataChanged();
+                    calculateDailyRevenue();
+                    System.out.println(s);
+                    JOptionPane.showMessageDialog(this, "Brisanje racuna uspesno");
+                    if(btm.getBills().isEmpty()){
+                        sto.setZauzet(false);
+                        Controller.getControllerInstance().updateTable(sto);
+                        btnAddBill.setEnabled(true);
+                    }
                 }
             } catch (Exception ex) {
                 Logger.getLogger(BillsFrm.class.getName()).log(Level.SEVERE, null, ex);
@@ -382,6 +405,7 @@ public class BillsFrm extends javax.swing.JFrame {
     private javax.swing.JLabel jLblSumBill;
     private javax.swing.JLabel jLblTable;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jtfSearch;

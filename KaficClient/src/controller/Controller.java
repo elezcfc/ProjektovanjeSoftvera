@@ -13,6 +13,7 @@ import domen.Pice;
 import domen.Racun;
 import domen.Sto;
 import java.io.IOException;
+import java.net.SocketException;
 import java.rmi.ServerException;
 import java.util.List;
 import transfer.ClientTransfer;
@@ -50,7 +51,11 @@ public class Controller {
             return (AbstractObject) st.getData();
         } else {
             Exception e = st.getException();
-            throw e;
+            if(e instanceof SocketException){
+                throw new ServerException("Server ne radi");
+            }else{
+                throw e;
+            }
         }
     }
 
@@ -256,7 +261,7 @@ public class Controller {
 
     public String resetTables() throws Exception{
         System.out.println("Resetujem stolove");
-        String poruka = "";
+        String poruka;
         ClientTransfer ct = new ClientTransfer();
         ct.setOperation(Constants.RESET_TABLES);
         Communication.getInstance().sendRequest(ct);
@@ -269,4 +274,12 @@ public class Controller {
             throw e;
         }
     }
+
+//    public boolean checkServer() throws IOException, ClassNotFoundException {
+//        ClientTransfer ct = new ClientTransfer();
+//        ct.setOperation(Constants.RESET_TABLES);
+//        Communication.getInstance().sendRequest(ct);
+//        ServerTransfer st = Communication.getInstance().getResponse();
+//        return st.getSuccesfull() == 1;
+//    }
 }

@@ -32,8 +32,7 @@ public class SOSearchDrinks extends AbstractSO{
         
         for (AbstractObject abstractObject : dbList) {
             Pice p = (Pice) abstractObject;
-            if(String.valueOf(p.getPiceID()).toLowerCase().contains(filterWord) ||
-                    p.getNazivPica().toLowerCase().contains(filterWord) ||
+            if(p.getNazivPica().toLowerCase().contains(filterWord) ||
                     String.valueOf(p.getCena()).toLowerCase().contains(filterWord)){
                 filteredList.add(p);
             }
